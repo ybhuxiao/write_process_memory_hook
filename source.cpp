@@ -14,7 +14,7 @@ typedef BOOL(APIENTRY* ProtoType_WriteProcessMemory)
 ProtoType_WriteProcessMemory WriteProcessMemoryHook = 
 (ProtoType_WriteProcessMemory)((uintptr_t)GetProcAddress(GetModuleHandleA("kernel32.dll"), "WriteProcessMemory"));
 
-void APIENTRY WriteProcessMemoryHooked
+bool APIENTRY WriteProcessMemoryHooked
 (
     _In_   HANDLE hProcess,               // Handle To Specified Process
     _In_   LPVOID lpBaseAddress,          // Dll's memory allocated in a buffer or programs memory.
