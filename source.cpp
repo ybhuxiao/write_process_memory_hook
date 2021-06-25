@@ -25,19 +25,26 @@ BOOL APIENTRY WriteProcessMemoryHooked
 {
     MessageBoxA(0, "Hooked on WriteProcessMemory!", "Success", 0);
     const char* dllPath = reinterpret_cast<const char*>(*lpBuffer);
-    MessageBoXA(0, dllPath, "Grabbed Dll Path!",0);
+    MessageBoxA(0, dllPath, "Grabbed Dll Path!",0);
 }
 
+void HooksAttach()
+{
+    DetourTransactionBegin();
+    DetourUpdateThread(GetCurrentThread());
+    DetourAttach(&(LPVOID&)WriteProcessMemoryHook, (PBYTE)WriteProcessMemoryHooked);
+    DetourTransactionCommit();
+}
 
 BOOL APIENTRY DllMain( HMODULE hModule, DWORD Reason,LPVOID lpReserved)
 {
     if (Reason == DLL_PROCESS_ATTACH)
     {
-        DetourTransactionBegin();
-        DetourUpdateThread(GetCurrentThread());
-        DetourAttach(&(LPVOID&)WriteProcessMemoryHook, (PBYTE)WriteProcessMemoryHooked);
-        DetourTransactionCommit();
+        try {
+            HooksAttach();
+        }catch(const std::exception&){}
     }
+    
     return TRUE;
 }
 
